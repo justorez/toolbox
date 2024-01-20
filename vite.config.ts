@@ -2,10 +2,13 @@ import { fileURLToPath } from 'node:url'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import VueRouter from 'unplugin-vue-router/vite'
+import { VueRouterAutoImports } from 'unplugin-vue-router'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import Icons from 'unplugin-icons/vite'
 import IconsResolver from 'unplugin-icons/resolver'
+// import basicSsl from '@vitejs/plugin-basic-ssl'
+
 
 const resolve = (p: string) => fileURLToPath(new URL(p, import.meta.url))
 
@@ -19,9 +22,13 @@ export default defineConfig({
         }
     },
     plugins: [
+        // dev server on https
+        // basicSsl({
+        //     name: 'test'
+        // }),
+
         // https://npmmirror.com/package/unplugin-vue-router
         VueRouter({
-            root: '.',
             routesFolder: [{ src: 'src/pages' }],
             dts: 'types/typed-router.d.ts',
             extensions: ['.vue']
@@ -32,7 +39,7 @@ export default defineConfig({
 
         // https://npmmirror.com/package/unplugin-auto-import
         AutoImport({
-            imports: ['vue'],
+            imports: ['vue', VueRouterAutoImports],
             dts: 'types/auto-imports.d.ts'
         }),
 

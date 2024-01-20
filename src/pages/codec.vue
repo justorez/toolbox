@@ -1,8 +1,15 @@
+<route lang="json">
+{
+    "meta": {
+        "title": "文字编码器"
+    }
+}
+</route>
 <script lang="ts" setup>
 import { Buffer } from 'buffer/'
 
 const Codec = {
-    Xhinese: { // 我是 Justorez 😄，How are you.
+    Xhinese: { // Hi, 我是 Justorez 😄。
         encode: (s: string) => {
             return s.split('')
                 .map(c => /^[\u4e00-\u9fa5]+$/.test(c)
@@ -54,8 +61,18 @@ const decode = () => {
 }
 
 const clean = () => content.value = ''
-const copy = () => {
-    navigator.clipboard.writeText(content.value)
+const copy = async () => {
+    try {
+        await navigator.clipboard.writeText(content.value)
+    } catch (err) {
+        console.error(err)
+        const input = document.createElement('input')
+        input.value = content.value
+        document.body.append(input)
+        input.select()
+        document.execCommand('copy')
+        input.remove()
+    }
 }
 const restoreIcon = (event: Event) => {
     setTimeout(() => {

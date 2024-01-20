@@ -1,3 +1,10 @@
+<route lang="json">
+{
+    "meta": {
+        "title": "基金补仓计算器"
+    }
+}
+</route>
 <script setup lang="ts">
 import NP from 'number-precision'
 
