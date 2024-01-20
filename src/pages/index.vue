@@ -1,8 +1,12 @@
 <script setup lang="ts">
-const entrances = [
-    { text: '文字编码器', url: '/codec' },
-    { text: '基金补仓计算器', url: '/funds' }
-]
+const routes = useRouter().getRoutes()
+
+const entrances = routes
+    .filter(r => r.path !== '/')
+    .map(r => ({
+        text: r.meta?.title,
+        url: r.path
+    }))
 </script>
 
 <template>
