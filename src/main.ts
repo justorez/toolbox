@@ -2,7 +2,6 @@ import { createApp } from 'vue'
 import { createRouter, createWebHashHistory } from 'vue-router/auto'
 import App from './App.vue'
 import './style.scss'
-import eruda from 'eruda'
 
 const router = createRouter({
     history: createWebHashHistory(import.meta.env.BASE_URL),
@@ -24,8 +23,9 @@ router.afterEach((to) => {
 
 createApp(App).use(router).mount('#app')
 
-console.log(router.getRoutes())
 
 if (import.meta.env.DEV) {
-    eruda.init()
+    console.log(import.meta.env)
+    console.log(router.getRoutes())
+    import('eruda').then(({ default: eruda }) => eruda.init())
 }

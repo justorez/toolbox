@@ -7,6 +7,7 @@ import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import Icons from 'unplugin-icons/vite'
 import IconsResolver from 'unplugin-icons/resolver'
+import { visualizer } from 'rollup-plugin-visualizer'
 // import basicSsl from '@vitejs/plugin-basic-ssl'
 
 
@@ -58,6 +59,9 @@ export default defineConfig({
             compiler: 'vue3',
             autoInstall: true,
             scale: 1.5
-        })
+        }),
+
+        // 构建包体积分析
+        visualizer()
     ]
 })
