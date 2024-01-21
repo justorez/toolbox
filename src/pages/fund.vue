@@ -82,8 +82,8 @@ function reset() {
                 <input class="form-input" type="number" v-model="form.replenishmentAmount" />
             </div>
             <div class="flex justify-end gap-3">
-                <button class="btn btn-outline" @click="reset">重置</button>
-                <button class="btn btn-neutral" @click="submit">计算</button>
+                <button class="btn btn-outline btn-sm" @click="reset">重置</button>
+                <button class="btn btn-neutral btn-sm" @click="submit">计算</button>
             </div>
         </div>
         <div class="result">

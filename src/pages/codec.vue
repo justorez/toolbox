@@ -7,26 +7,53 @@
 </route>
 <script lang="ts" setup>
 import { Buffer } from 'buffer/'
+import EMOJIS from '@/utils/emojis.json'
+
+const EMOJI_CODES = EMOJIS.reduce((o, emoji, i) => {
+    o[emoji] = i
+    return o
+}, {} as Record<string, number>)
 
 const Codec = {
-    Xhinese: { // Hi, 我是 Justorez 😄。
+    Emoji: {
         encode: (s: string) => {
-            return s.split('')
-                .map(c => /^[\u4e00-\u9fa5]+$/.test(c)
-                    ? String.fromCharCode(c.charCodeAt(0) + 1)
-                    : c
+            let result: string[] = []
+            for (const c of [ ...s ]) {
+                Buffer.from(c)
+                    .toJSON()
+                    .data.forEach((code) => {
+                        result.push(EMOJIS[code])
+                    })
+            }
+            return result.join('')
+        },
+        decode: (s: string) => {
+            const codes = [ ...s ].map((emoji) => EMOJI_CODES[emoji])
+            return Buffer.from(codes).toString()
+        },
+        desc: '把文字变成表情😉'
+    },
+    混乱中文: {
+        // Hi, 我是 Justorez 😄。
+        encode: (s: string) => {
+            return [...s]
+                .map((c) =>
+                    /^[\u4e00-\u9fa5]+$/.test(c)
+                        ? String.fromCharCode(c.charCodeAt(0) + 1)
+                        : c
                 )
                 .join('')
         },
         decode: (s: string) => {
-            return s.split('')
-                .map(c => /^[\u4e00-\u9fa5]+$/.test(c)
-                    ? String.fromCharCode(c.charCodeAt(0) - 1)
-                    : c
+            return [...s]
+                .map((c) =>
+                    /^[\u4e00-\u9fa5]+$/.test(c)
+                        ? String.fromCharCode(c.charCodeAt(0) - 1)
+                        : c
                 )
                 .join('')
         },
-        desc: '😅让人疑惑的中文，当然也让控评机器人疑惑'
+        desc: '让人疑惑的中文'
     },
     Base64: {
         encode: (s: string) => Buffer.from(s).toString('base64'),
@@ -44,13 +71,12 @@ const Codec = {
         desc: ''
     }
 }
-type CodecKeys = keyof typeof Codec
+type Encodings = keyof typeof Codec
 
-// 编码算法
-const algos = Object.keys(Codec)
-const selected = ref<CodecKeys>('Xhinese')
-const selectAlgo = (t: CodecKeys) => selected.value = t
-const algoDesc = computed(() => Codec[selected.value].desc)
+const encodings = Object.keys(Codec)
+const selected = ref<Encodings>('Emoji')
+const selectAlgo = (t: Encodings) => (selected.value = t)
+const encodingDesc = computed(() => Codec[selected.value].desc)
 
 const content = ref('')
 const encode = () => {
@@ -60,7 +86,7 @@ const decode = () => {
     content.value = Codec[selected.value].decode(content.value) || ''
 }
 
-const clean = () => content.value = ''
+const clean = () => (content.value = '')
 const copy = async () => {
     try {
         await navigator.clipboard.writeText(content.value)
@@ -76,7 +102,7 @@ const copy = async () => {
 }
 const restoreIcon = (event: Event) => {
     setTimeout(() => {
-        (event.target as HTMLInputElement).checked = false
+        ;(event.target as HTMLInputElement).checked = false
     }, 1200)
 }
 </script>
@@ -84,25 +110,25 @@ const restoreIcon = (event: Event) => {
 <template>
     <div class="toolapp">
         <div class="flex gap-2">
-            <button 
-                v-for="algo in algos"
-                :key="algo"
+            <button
+                v-for="enc in encodings"
+                :key="enc"
                 class="btn btn-sm"
                 :class="{
-                    'btn-outline': selected !== algo,
-                    'btn-neutral': selected === algo
+                    'btn-outline': selected !== enc,
+                    'btn-neutral': selected === enc
                 }"
-                @click="selectAlgo(algo as CodecKeys)"
+                @click="selectAlgo(enc as Encodings)"
             >
-                {{ algo }}
+                {{ enc }}
             </button>
         </div>
         <div class="mt-4 mb-4">
-            <textarea 
+            <textarea
                 v-model="content"
-                class="textarea textarea-bordered w-full" 
+                class="textarea textarea-bordered w-full"
                 rows="6"
-                :placeholder="algoDesc"
+                :placeholder="encodingDesc"
             ></textarea>
         </div>
         <div class="flex justify-between items-center">
@@ -111,16 +137,15 @@ const restoreIcon = (event: Event) => {
                 <button class="btn btn-sm" @click="decode">Decode</button>
             </div>
             <div class="flex gap-2">
-                <i-mdi:restore class="cursor-pointer" @click="clean"/>
+                <i-mdi:restore class="cursor-pointer" @click="clean" />
                 <label class="swap swap-rotate cursor-pointer" @click="copy">
-                    <input type="checkbox" @change="restoreIcon($event)"/>
-                    <i-mdi:content-copy class="swap-off"/>
-                    <i-mdi:check class="swap-on text-success"/>
+                    <input type="checkbox" @change="restoreIcon($event)" />
+                    <i-mdi:content-copy class="swap-off" />
+                    <i-mdi:check class="swap-on text-success" />
                 </label>
             </div>
         </div>
     </div>
 </template>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

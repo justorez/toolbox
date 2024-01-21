@@ -10,7 +10,7 @@ const entrances = routes
 </script>
 
 <template>
-    <div class="flex justify-center gap-5">
+    <div class="flex justify-center flex-wrap gap-5">
         <RouterLink
             v-for="entry in entrances"
             :key="entry.url"
