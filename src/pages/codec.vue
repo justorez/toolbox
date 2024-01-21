@@ -33,7 +33,7 @@ const Codec = {
         },
         desc: '把文字变成表情😉'
     },
-    混乱中文: {
+    发疯: {
         // Hi, 我是 Justorez 😄。
         encode: (s: string) => {
             return [...s]
@@ -109,7 +109,7 @@ const restoreIcon = (event: Event) => {
 
 <template>
     <div class="toolapp">
-        <div class="flex gap-2">
+        <div class="flex gap-2 flex-wrap">
             <button
                 v-for="enc in encodings"
                 :key="enc"
